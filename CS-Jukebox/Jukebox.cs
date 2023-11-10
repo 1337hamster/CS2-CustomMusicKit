@@ -15,7 +15,7 @@ namespace CS_Jukebox
         private bool shouldStop = false;
         private int timerCount = 0;
         private int timerGoal = 0;
-        private int active = 0;
+        private int active = 1;
         private int delayedCount = 0;
         private float fadeVolume;
         private float volumeIncrement; //Incremental change in volume when fading out song.
@@ -46,16 +46,23 @@ namespace CS_Jukebox
             player.controls.currentPosition = song.Start;
             player.controls.play();
             player.settings.setMode("loop", loop);
+
+            timerGoal = -1;
+            shouldStop = false;
+            if (fadeTimer != null && fadeTimer.Enabled == true) fadeTimer.Stop();
+            UpdateVolume();
         }
 
         //Play song with a determined amount of time in seconds
         public void PlaySong(SongProfile song, bool loop, int duration)
         {
-            PlaySong(song, loop);
-
             timerCount = 0;
             timerGoal = duration;
             isPlaying = true;
+
+            UpdateVolume();
+
+            PlaySong(song, loop);
         }
 
         public void UpdateVolume()
@@ -93,7 +100,7 @@ namespace CS_Jukebox
             {
                 fadeVolume -= volumeIncrement;
                 player.settings.volume = (int)fadeVolume;
-                Console.WriteLine(fadeVolume);
+                Console.WriteLine("fadeTimerTick:" + fadeVolume);
             }
             else
             {
@@ -117,24 +124,26 @@ namespace CS_Jukebox
 
             if (shouldStop)
             {
-                StopSong();
                 shouldStop = false;
+                StopSong();
+                Console.WriteLine("Should Stop");
             }
 
-            if (isPlaying && timerCount >= timerGoal)
+            if (isPlaying && timerCount >= timerGoal && timerGoal != -1)
             {
                 StopSong();
+                Console.WriteLine("Time goal reached! Stop");
             }
 
             //Check if csgo is focused
-            if (WinAPI.GetActiveProcess() == "cs2")
-            {
-                active = 1;
-            }
-            else
-            {
-                active = 0;
-            }
+            //if (WinAPI.GetActiveProcess() == "cs2")
+            //{
+            //    active = 1;
+            //}
+            //else
+            //{
+            //    active = 1; //focus always
+            //}
 
             if (delayedCount >= 2)
             {

@@ -16,11 +16,10 @@ namespace CS_Jukebox
         private GameStateListener gsl;
         private MusicState musicState = MusicState.None;
         private int playerMVPs = 0;
-        private int roundTime = 115;
-        private int bombTime = 45;
+        private int roundTime = 125;
+        private int bombTime = 40;
         private int currentRoundTime = 0;
         private int currentBombTime = 0;
-
         public GameLogic()
         {
             jukebox = new Jukebox();
@@ -90,9 +89,10 @@ namespace CS_Jukebox
 
             if (gs.Round.Phase == RoundPhase.Live && musicState != MusicState.Live && musicState != MusicState.BombPlanted)
             {
+                Console.WriteLine("Stoping and ready to play startSong");
                 jukebox.Stop();
                 musicState = MusicState.Live;
-                jukebox.PlaySong(Properties.SelectedKit.startSong, false, 8);
+                jukebox.PlaySong(Properties.SelectedKit.startSong, false, 12);
                 Console.WriteLine("Round Begun");
 
             }
@@ -129,16 +129,16 @@ namespace CS_Jukebox
             switch (gs.Map.Mode)
             {
                 case MapMode.Casual:
-                    roundTime = 120;
-                    bombTime = 45;
+                    roundTime = 145;
+                    bombTime = 35;
                     break;
                 case MapMode.Competitive:
-                    roundTime = 115;
-                    bombTime = 40;
+                    roundTime = 125;
+                    bombTime = 35;
                     break;
                 default:
-                    roundTime = 120;
-                    bombTime = 45;
+                    roundTime = 135;
+                    bombTime = 35;
                     break;
             }
         }
